@@ -60,3 +60,28 @@ func ListUsers(c *gin.Context) {
 
 	utils.Response(c, 200, true, "Users fetched successfully", &users)
 }
+
+
+func UserIssuedBooks(c *gin.Context) {
+	var user models.User
+	var books []models.Book
+	var issuedBooks []models.BookIssue
+
+	id := c.Param("id")
+	if err := database.DB.First(&user, id).Error; err != nil {
+		utils.NotFoundResponse(c)
+		return
+	}
+
+	if err := database.DB.Where("user_id = ?", user.ID).Preload("Book").Find(&issuedBooks).Error; err != nil {
+		utils.NotFoundResponse(c)
+		return
+	}
+
+	for _, issue := range issuedBooks {
+		books = append(books, issue.Book)
+	}
+
+	utils.SuccessResponse(c, "Issued books for User fetched Successfully", books)
+
+}

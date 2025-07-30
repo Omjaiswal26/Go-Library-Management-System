@@ -4,6 +4,8 @@ import (
 	"go-library-management/database"
 	"go-library-management/models"
 	"go-library-management/utils"
+	"log"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,12 +16,24 @@ func GetBooks(c *gin.Context) {
 }
 
 func CreateBook(c *gin.Context) {
-	var book models.Book
-	if err:= c.ShouldBindJSON(&book); err != nil {
+	var input models.CreateBookInput
+	if err:= c.ShouldBindJSON(&input); err != nil {
 		utils.Response(c, 400, false, "Invalid payload", nil)
 		return
 	}
-	database.DB.Create(&book)
+
+	book := models.Book{
+		Title: input.Title,
+		Author: input.Author,
+		Description: input.Description,
+		Available: true,
+	}
+
+	if err := database.DB.Create(&book).Error; err != nil{
+		log.Println("Error creating book", err)
+		utils.InternalServerErrorResponse(c)
+	}
+
 	utils.Response(c, 201, true, "Book created successfully", book)
 }
 

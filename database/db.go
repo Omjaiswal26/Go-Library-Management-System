@@ -19,12 +19,11 @@ func ConnectDatabase() {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
-	err = DB.AutoMigrate(&models.Book{})
-	if err != nil {
-		log.Fatal("Failed to migrate: ", err)
-	}
-
-	err = DB.AutoMigrate(&models.User{})
+	err = DB.AutoMigrate(
+		&models.Book{},
+		&models.User{},
+		&models.BookIssue{},
+	)
 	if err != nil {
 		log.Fatal("Failed to migrate: ", err)
 	}

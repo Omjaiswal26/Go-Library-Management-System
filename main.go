@@ -15,9 +15,12 @@ func main() {
 	router.GET("/books/:id", controllers.GetBook)
 	router.POST("/books", controllers.CreateBook)
 	router.DELETE("/books/:id", controllers.DeleteBook)
+	router.POST("/issue-book", controllers.IssueBook)
 
 	router.POST("/register", controllers.Register)
 	router.POST("/login", controllers.Login)
 	router.GET("/list-users", controllers.ListUsers)
+	router.GET("/user-issued-books/:id", controllers.UserIssuedBooks)
+
 	router.Run(":8080")
 }
